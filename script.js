@@ -1,15 +1,44 @@
-// Elementos do DOM
+// ============================================
+// DOM Elements
+// ============================================
 const actionButton = document.getElementById('actionButton');
 const messageElement = document.getElementById('message');
 const counterElement = document.getElementById('counter');
 const incrementBtn = document.getElementById('incrementBtn');
 const decrementBtn = document.getElementById('decrementBtn');
 const resetBtn = document.getElementById('resetBtn');
+const themeToggle = document.getElementById('themeToggle');
+const todoInput = document.getElementById('todoInput');
+const addTodoBtn = document.getElementById('addTodoBtn');
+const todoList = document.getElementById('todoList');
 
-// Estado do contador
+// ============================================
+// Theme Management
+// ============================================
+const THEME_KEY = 'app-theme';
+
+function initTheme() {
+    const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem(THEME_KEY, newTheme);
+}
+
+themeToggle.addEventListener('click', toggleTheme);
+
+// ============================================
+// Counter State
+// ============================================
 let counter = 0;
 
-// Mensagens para o botão de ação
+// ============================================
+// Interactive Messages
+// ============================================
 const messages = [
     '🎉 Ótimo trabalho!',
     '✨ Você está indo bem!',
@@ -20,12 +49,10 @@ const messages = [
     '🔥 Incrível!'
 ];
 
-// Função para obter mensagem aleatória
 function getRandomMessage() {
     return messages[Math.floor(Math.random() * messages.length)];
 }
 
-// Event listener para o botão de ação
 actionButton.addEventListener('click', () => {
     messageElement.textContent = getRandomMessage();
     messageElement.style.animation = 'none';
@@ -34,7 +61,9 @@ actionButton.addEventListener('click', () => {
     }, 10);
 });
 
-// Função para atualizar o contador
+// ============================================
+// Counter Functions
+// ============================================
 function updateCounter() {
     counterElement.textContent = counter;
     counterElement.style.animation = 'none';
@@ -43,7 +72,6 @@ function updateCounter() {
     }, 10);
 }
 
-// Event listeners para os botões do contador
 incrementBtn.addEventListener('click', () => {
     counter++;
     updateCounter();
@@ -63,17 +91,105 @@ resetBtn.addEventListener('click', () => {
     }, 2000);
 });
 
-// Mensagem de boas-vindas no console
-console.log('🚀 Aplicação carregada com sucesso!');
-console.log('📝 Projeto de teste para Pull Request');
+// ============================================
+// Todo List Management
+// ============================================
+const TODO_KEY = 'app-todos';
+let todos = [];
 
-// Animação de fade in para mensagens
+function loadTodos() {
+    const savedTodos = localStorage.getItem(TODO_KEY);
+    todos = savedTodos ? JSON.parse(savedTodos) : [];
+    renderTodos();
+}
+
+function saveTodos() {
+    localStorage.setItem(TODO_KEY, JSON.stringify(todos));
+}
+
+function addTodo(text) {
+    if (!text.trim()) return;
+    
+    const todo = {
+        id: Date.now(),
+        text: text.trim(),
+        completed: false,
+        createdAt: new Date().toISOString()
+    };
+    
+    todos.unshift(todo);
+    saveTodos();
+    renderTodos();
+    todoInput.value = '';
+}
+
+function toggleTodo(id) {
+    const todo = todos.find(t => t.id === id);
+    if (todo) {
+        todo.completed = !todo.completed;
+        saveTodos();
+        renderTodos();
+    }
+}
+
+function deleteTodo(id) {
+    todos = todos.filter(t => t.id !== id);
+    saveTodos();
+    renderTodos();
+}
+
+function renderTodos() {
+    if (todos.length === 0) {
+        todoList.innerHTML = '<div class="empty-state">Nenhuma tarefa adicionada ainda. Comece criando uma!</div>';
+        return;
+    }
+    
+    todoList.innerHTML = todos.map(todo => `
+        <li class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
+            <input 
+                type="checkbox" 
+                class="todo-checkbox" 
+                ${todo.completed ? 'checked' : ''}
+                aria-label="Marcar como ${todo.completed ? 'não concluída' : 'concluída'}"
+            >
+            <span class="todo-text">${escapeHtml(todo.text)}</span>
+            <button class="todo-delete" aria-label="Deletar tarefa">×</button>
+        </li>
+    `).join('');
+    
+    // Add event listeners
+    document.querySelectorAll('.todo-checkbox').forEach((checkbox, index) => {
+        checkbox.addEventListener('change', () => toggleTodo(todos[index].id));
+    });
+    
+    document.querySelectorAll('.todo-delete').forEach((btn, index) => {
+        btn.addEventListener('click', () => deleteTodo(todos[index].id));
+    });
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+addTodoBtn.addEventListener('click', () => addTodo(todoInput.value));
+
+todoInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        addTodo(todoInput.value);
+    }
+});
+
+// ============================================
+// Animations
+// ============================================
 const style = document.createElement('style');
 style.textContent = `
     @keyframes fadeIn {
         from {
             opacity: 0;
-            transform: scale(0.9);
+            transform: scale(0.95);
         }
         to {
             opacity: 1;
@@ -82,4 +198,23 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// ============================================
+// Initialization
+// ============================================
+function init() {
+    console.log('🚀 Aplicação carregada com sucesso!');
+    console.log('📝 Projeto de teste para Pull Request');
+    console.log('🎨 Design minimalista inspirado em Stripe e Notion');
+    
+    initTheme();
+    loadTodos();
+}
+
+// Initialize app when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
 

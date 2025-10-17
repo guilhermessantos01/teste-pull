@@ -7,43 +7,79 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="theme-toggle" id="themeToggle" aria-label="Alternar tema escuro/claro">
+        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+    </div>
+
     <div class="container">
         <header>
-            <h1>🚀 Projeto de Teste</h1>
-            <p class="subtitle">Exemplo para Pull Request</p>
+            <h1>Projeto de Teste</h1>
+            <p class="subtitle">Exemplo para Pull Request com design minimalista</p>
         </header>
 
         <main>
             <section class="welcome-section">
                 <h2>Bem-vindo!</h2>
-                <p>Este é um projeto de exemplo criado para testar o fluxo de trabalho com Pull Requests.</p>
+                <p>Este é um projeto de exemplo criado para testar o fluxo de trabalho com Pull Requests. Design inspirado em Stripe e Notion.</p>
             </section>
 
             <section class="feature-section">
                 <h3>Funcionalidades</h3>
                 <ul>
-                    <li>Design limpo e moderno</li>
+                    <li>Design limpo e minimalista</li>
+                    <li>Modo escuro/claro</li>
                     <li>Interface responsiva</li>
                     <li>Interatividade com JavaScript</li>
                     <li>Código bem estruturado</li>
+                    <li>Lista de tarefas interativa</li>
                 </ul>
+            </section>
+
+            <section class="todo-section">
+                <h3>Lista de Tarefas</h3>
+                <div class="todo-input-container">
+                    <input 
+                        type="text" 
+                        id="todoInput" 
+                        placeholder="Adicione uma nova tarefa..."
+                        class="todo-input"
+                        aria-label="Nova tarefa"
+                    >
+                    <button id="addTodoBtn" class="btn-primary" aria-label="Adicionar tarefa">
+                        Adicionar
+                    </button>
+                </div>
+                <ul id="todoList" class="todo-list"></ul>
             </section>
 
             <section class="interactive-section">
                 <h3>Seção Interativa</h3>
                 <button id="actionButton" class="btn-primary">Clique Aqui!</button>
-                <p id="message" class="message"></p>
+                <p id="message" class="message" role="status" aria-live="polite"></p>
             </section>
 
             <section class="counter-section">
                 <h3>Contador</h3>
                 <div class="counter-display">
-                    <span id="counter">0</span>
+                    <span id="counter" aria-live="polite" aria-atomic="true">0</span>
                 </div>
                 <div class="counter-buttons">
-                    <button id="decrementBtn" class="btn-secondary">-</button>
-                    <button id="resetBtn" class="btn-secondary">Reset</button>
-                    <button id="incrementBtn" class="btn-secondary">+</button>
+                    <button id="decrementBtn" class="btn-secondary" aria-label="Decrementar">-</button>
+                    <button id="resetBtn" class="btn-secondary" aria-label="Resetar contador">Reset</button>
+                    <button id="incrementBtn" class="btn-secondary" aria-label="Incrementar">+</button>
                 </div>
             </section>
         </main>
